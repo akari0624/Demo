@@ -1,0 +1,16 @@
+h2 {
+    color: red;
+}
+
+.blueT {
+    color: blue;
+    font-size: 80px;
+}
+
+.clickableDiv {
+    cursor: pointer;
+}
+
+button.buyBtn {
+    cursor: pointer;
+}
