@@ -41,7 +41,9 @@ export default class Content extends Component {
 
   cancelBuy = (removeIndex) => {
     const theCart = this.state.cart;
-    const newCart = theCart.slice(removeIndex, 1);
+    const fromArr = theCart.splice(removeIndex + 1, theCart.length);
+    const laterArr = theCart.slice(0, removeIndex);
+    const newCart = fromArr.concat(laterArr);
     this.setState({cart: newCart});
 
   }
@@ -50,7 +52,8 @@ export default class Content extends Component {
     alert(`已從信用卡中扣除${amount}元`));
 
   render() {
-
+    const good = true;
+    const bad = false;
     const totalPrice = this.state.cart.reduce((acc, item) => acc + item.price, 0);
     return (
       <Container>
@@ -61,7 +64,10 @@ export default class Content extends Component {
             <hr className="my-2"/>
             <p>不僅如此，美客唱片將跨足大中華地區，透過舉辦跨國、跨區域的大型頒獎典禮、演唱會以及音樂活動進一步擴大影響力，提昇流行音樂產業的動能</p>
             <p className="lead">
-              <Button color="primary" onClick={this.toggle}>
+              <Button
+                disabled={this.state.cart.length === 0 ? good : bad}
+                color="primary"
+                onClick={this.toggle}>
                 購物車({this.state.cart.length})
               </Button>
             </p>
@@ -114,7 +120,7 @@ export default class Content extends Component {
                       <th scope="row">{index + 1}</th>
                       <td>{item.title}</td>
                       <td>{item.price}</td>
-                      <td onClick={() => this.cancelBuy(index)}> 取消 </td>
+                      <td className="btn btn-danger" onClick={() => this.cancelBuy(index)}> 取消 </td>
                     </tr>
                   ))}
 
