@@ -14,3 +14,7 @@ h2 {
 button.buyBtn {
     cursor: pointer;
 }
+
+.btn .btn-danger{
+  cursor: pointer;
+}

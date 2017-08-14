@@ -1,60 +1,60 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
-  Card,
-  CardImg,
-  CardText,
-  CardBlock,
-  CardTitle,
-  CardSubtitle,
   Container,
   Row,
   Col,
   Button,
-  Jumbotron,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Table
+  Jumbotron
 } from 'reactstrap';
+import {connect} from 'react-redux';
 import './style.css';
-import AlbumJson from './Album.json';
+import getDataFun, {openCart} from '../action/index';
+import ProductCard from './detailComponent/ProductCard';
+import Cart from './detailComponent/Cart';
 
-export default class Content extends Component {
+
+class Content extends Component {
+  static propTypes = {
+    products: PropTypes.any,
+    cart: PropTypes.any,
+    isCartOpen: PropTypes.any,
+    getDataFun: PropTypes.func,
+    openCart: PropTypes.func
+  };
 
   state = {
-    modal: false,
-    cart: []
+    modal: false
   }
+
+  componentWillMount() {
+
+    this.props.getDataFun();
+  }
+
 
   toggle = () => {
-    this.setState({
-      modal: !this.state.modal
-    });
+    if (this.props.cart.length) {
+      this.props.openCart();
+    } else {
+      return;
+    }
   }
 
-  addToCart = (product) => {
-    const newCart = this.state.cart;
-    newCart.push(product);
-    this.setState({cart: newCart});
-  }
 
-  cancelBuy = (removeIndex) => {
-    const theCart = this.state.cart;
-    const fromArr = theCart.splice(removeIndex + 1, theCart.length);
-    const laterArr = theCart.slice(0, removeIndex);
-    const newCart = fromArr.concat(laterArr);
-    this.setState({cart: newCart});
+  renderProductsCard = data => (
 
-  }
+    data.map(d => (
+      <ProductCard product={d} key={d.id}/>
+           )));
 
-  checkOut = amount => (
-    alert(`已從信用卡中扣除${amount}元`));
+  renderCartWindow = () => (
+    <Cart modal={this.props.isCartOpen}/>
+  );
+
 
   render() {
     const good = true;
     const bad = false;
-    const totalPrice = this.state.cart.reduce((acc, item) => acc + item.price, 0);
     return (
       <Container>
         <Jumbotron>
@@ -65,75 +65,35 @@ export default class Content extends Component {
             <p>不僅如此，美客唱片將跨足大中華地區，透過舉辦跨國、跨區域的大型頒獎典禮、演唱會以及音樂活動進一步擴大影響力，提昇流行音樂產業的動能</p>
             <p className="lead">
               <Button
-                disabled={this.state.cart.length === 0 ? good : bad}
+                disabled={this.props.cart.length === 0 ? good : bad}
                 color="primary"
                 onClick={this.toggle}>
-                購物車({this.state.cart.length})
+                購物車({this.props.cart.length})
               </Button>
             </p>
           </Col>
         </Jumbotron>
         <Row>
 
-          {AlbumJson.map(product => (
-            <Col xs="12" sm="6" md="4" lg="3">
-              <Card>
-                <CardImg top width="100%" src={product.img} alt={product.title}/>
-                <CardBlock>
-                  <CardTitle>{product.title}</CardTitle>
-                  <CardSubtitle>價格：{product.price}元</CardSubtitle>
-                  <CardText>{product.desc}</CardText>
-                  <Button
-                    className="buyBtn"
-                    onClick={() => this.addToCart(product)}
-                    disabled={this
-                    .state
-                    .cart
-                    .find(item => item.id === product.id)}>
-                    購買
-                  </Button>
-                </CardBlock>
-              </Card>
-            </Col>
-          ))}
+          {this.renderProductsCard(this.props.products)}
 
         </Row>
 
-        <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
-          <ModalBody>
-            <Table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>品項</th>
-                  <th>價格</th>
-                  <th>取消購買</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this
-                  .state
-                  .cart
-                  .map((item, index) => (
-                    <tr>
-                      <th scope="row">{index + 1}</th>
-                      <td>{item.title}</td>
-                      <td>{item.price}</td>
-                      <td className="btn btn-danger" onClick={() => this.cancelBuy(index)}> 取消 </td>
-                    </tr>
-                  ))}
+        {this.renderCartWindow()}
 
-              </tbody>
-            </Table>
-          </ModalBody>
-          <ModalFooter>
-            <div>總價：{totalPrice}</div>
-            <Button color="primary" onClick={() => this.checkOut(totalPrice)}>結帳</Button>{' '}
-            <Button color="secondary" onClick={this.toggle}>取消</Button>
-          </ModalFooter>
-        </Modal>
+
       </Container>
     );
   }
 }
+
+function mapStateToProps(state) {
+
+  return {
+    products: state.products,
+    cart: state.cart,
+    isCartOpen: state.isCartOpen
+  };
+}
+
+export default connect(mapStateToProps, {getDataFun, openCart})(Content);
