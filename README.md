@@ -1,3 +1,11 @@
+# react簡單購物車
+- 使用redux管理狀態
+
+* [DEMO](https://akari0624.github.io/ReactShoppingCartDemo/#/)
+
+
+
+* 本demo是base on rreactMaker的 Simple React Start Kit 2017製作，以下是他們的starter kit的介紹：
 # Simple React Start Kit 2017
 
 這個環境包可以讓你快速體驗 ReactJS 開發環境的便利，我們並沒有在裏面放入太多套件(例如 redux, karma)，希望可以讓你用最簡單的環境開始學習 React

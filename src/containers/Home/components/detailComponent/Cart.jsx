@@ -13,7 +13,7 @@ import {closeCart, deleteOneProductInCart} from '../../action/index';
 class Cart extends Component {
   static propTypes = {
     cart: PropTypes.any,
-    modal: PropTypes.any,
+    modal: PropTypes.bool,
     closeCart: PropTypes.func,
     deleteOneProductInCart: PropTypes.func
   };
